@@ -1,0 +1,2542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FBEAF0">
+<title>🗼 도쿄 4인방</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --pink-50: #FBEAF0;
+  --pink-100: #F4C0D1;
+  --pink-200: #ED93B1;
+  --pink-400: #D4537E;
+  --pink-600: #993556;
+  --pink-800: #72243E;
+  --pink-900: #4B1528;
+  --gray-bg: #FAF7F8;
+  --white: #FFFFFF;
+  --border: rgba(212, 83, 126, 0.15);
+  --text-secondary: #888780;
+  --text-tertiary: #B4B2A9;
+  --success: #1D9E75;
+  --warning: #EF9F27;
+  --danger: #E24B4A;
+  --shadow-sm: 0 1px 3px rgba(75, 21, 40, 0.05);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: var(--gray-bg);
+  color: var(--pink-900);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  max-width: 420px;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; }
+
+/* ===== 헤더 ===== */
+.header {
+  background: var(--pink-50);
+  padding: 24px 20px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.share-btn {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pink-400);
+  padding: 6px 12px;
+  background: var(--white);
+  border: 0.5px solid var(--pink-100);
+  border-radius: 100px;
+  transition: transform 0.15s ease;
+}
+
+.share-btn:active { 
+  transform: scale(0.95); 
+  background: var(--pink-50);
+}
+
+body.view-mode .share-btn { display: none; }
+
+/* ===== 공유 옵션 카드 ===== */
+.share-option-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--gray-bg);
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.share-option-card:has(input:checked) {
+  background: var(--pink-50);
+  border-color: var(--pink-400);
+}
+
+.share-option-card input { 
+  margin: 0;
+  cursor: pointer;
+}
+
+.share-option-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pink-900);
+  margin-bottom: 2px;
+}
+
+.share-option-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.share-check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--gray-bg);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pink-900);
+}
+
+.share-check-row input {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--pink-400);
+}
+
+.header-back {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--pink-600);
+  margin-left: -6px;
+}
+
+.header-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.header-logo {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pink-600);
+  letter-spacing: -0.3px;
+}
+
+.header-dday {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--pink-900);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.header-sub {
+  font-size: 12px;
+  color: var(--pink-600);
+  font-weight: 500;
+}
+
+.header-page-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--pink-900);
+  margin-bottom: 2px;
+}
+
+.header-page-sub {
+  font-size: 12px;
+  color: var(--pink-600);
+}
+
+/* ===== 진행률 ===== */
+.progress-section {
+  padding: 16px 20px 0;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.progress-label-pct {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pink-600);
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--pink-50);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink-200), var(--pink-400));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* ===== 콘텐츠 ===== */
+.content { padding: 20px; }
+
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin: 20px 0 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title:first-child { margin-top: 0; }
+
+.btn-add {
+  font-size: 11px;
+  color: var(--pink-400);
+  font-weight: 600;
+  padding: 4px 10px;
+  background: var(--pink-50);
+  border-radius: 12px;
+  letter-spacing: 0;
+}
+
+/* ===== 지금 할 일 카드 ===== */
+.now-card {
+  background: var(--pink-50);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  border: 0.5px solid var(--border);
+}
+
+.now-card-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--pink-600);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.now-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pink-900);
+  margin-bottom: 4px;
+}
+
+.now-card-sub {
+  font-size: 12px;
+  color: var(--pink-600);
+}
+
+/* ===== 일정 카드 ===== */
+.day-card {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: transform 0.15s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.day-card:active { transform: scale(0.98); }
+
+.day-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.day-icon.pink { background: var(--pink-50); }
+.day-icon.blue { background: #E6F1FB; }
+.day-icon.amber { background: #FAEEDA; }
+.day-icon.green { background: #E1F5EE; }
+
+.day-info { flex: 1; min-width: 0; }
+
+.day-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pink-900);
+  margin-bottom: 2px;
+}
+
+.day-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.day-arrow {
+  font-size: 18px;
+  color: var(--text-tertiary);
+}
+
+/* ===== 바로가기 그리드 ===== */
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.quick-card {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 12px;
+  text-align: center;
+  transition: transform 0.15s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-card:active { transform: scale(0.96); }
+
+.quick-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+  color: var(--pink-400);
+}
+
+.quick-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pink-900);
+  margin-bottom: 2px;
+}
+
+.quick-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* ===== 체크리스트 ===== */
+.check-group { margin-bottom: 20px; }
+
+.check-group-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.check-group-title.urgent { color: var(--pink-400); }
+.check-group-title.medium { color: var(--warning); }
+.check-group-title.low { color: var(--success); }
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  transition: all 0.15s ease;
+}
+
+.check-item.checked {
+  background: var(--gray-bg);
+  opacity: 0.7;
+}
+
+.check-item.checked .check-text {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--pink-200);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--white);
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.check-item.checked .checkbox {
+  background: var(--pink-400);
+  border-color: var(--pink-400);
+}
+
+.check-item.checked .checkbox::after {
+  content: "✓";
+  font-weight: bold;
+}
+
+.check-icon {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.check-text {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pink-900);
+  word-break: break-all;
+}
+
+.check-meta {
+  font-size: 10px;
+  color: var(--pink-400);
+  font-weight: 500;
+}
+
+.check-actions {
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.check-item:hover .check-actions,
+.check-item.editing .check-actions { opacity: 1; }
+
+.check-action-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  border-radius: 4px;
+}
+
+.check-action-btn:active { background: var(--pink-50); }
+
+/* ===== 비용/정산 ===== */
+.cost-hero {
+  background: var(--pink-50);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.cost-hero-label {
+  font-size: 11px;
+  color: var(--pink-600);
+  margin-bottom: 4px;
+}
+
+.cost-hero-num {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--pink-900);
+  letter-spacing: -1px;
+}
+
+.cost-hero-sub {
+  font-size: 11px;
+  color: var(--pink-600);
+  margin-top: 4px;
+}
+
+.cost-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.cost-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cost-item-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.cost-item-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.cost-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pink-900);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cost-item-total {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.cost-item-right { 
+  text-align: right; 
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.cost-item-right:active {
+  background: var(--pink-50);
+}
+
+.cost-amount {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pink-600);
+}
+
+.cost-amount-label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+
+.cost-status {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  display: inline-block;
+}
+
+.cost-status.done { 
+  color: var(--success); 
+  background: rgba(29, 158, 117, 0.1);
+}
+
+.cost-status.pending { 
+  color: var(--warning); 
+  background: rgba(239, 159, 39, 0.1);
+}
+
+.settlement-box {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 16px;
+}
+
+.settlement-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.settlement-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.settlement-row.total {
+  border-top: 0.5px solid var(--border);
+  margin-top: 6px;
+  padding-top: 8px;
+  font-weight: 600;
+  color: var(--pink-600);
+}
+
+/* ===== 비상연락 ===== */
+.contact-card {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 8px;
+}
+
+.contact-card.hotel {
+  background: var(--pink-50);
+  border-color: var(--pink-200);
+}
+
+.contact-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pink-900);
+  margin-bottom: 4px;
+}
+
+.contact-detail {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.contact-btn {
+  flex: 1;
+  padding: 10px;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--pink-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-decoration: none;
+}
+
+.contact-btn:active { background: var(--pink-50); }
+
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.contact-row:active { background: var(--pink-50); }
+
+.contact-row-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.contact-row-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--pink-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.contact-row-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pink-900);
+}
+
+.contact-row-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.contact-row-arrow { font-size: 16px; color: var(--pink-400); }
+
+/* ===== 일정 상세 (타임라인) ===== */
+.timeline {
+  position: relative;
+  padding-left: 80px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 65px;
+  top: 8px;
+  bottom: 8px;
+  width: 1.5px;
+  background: var(--pink-100);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.timeline-item:active .timeline-card { transform: scale(0.98); }
+
+.timeline-dot {
+  position: absolute;
+  left: -22px;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--pink-400);
+  box-sizing: border-box;
+}
+
+.timeline-time {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pink-600);
+  margin-bottom: 4px;
+}
+
+.timeline-duration {
+  position: absolute;
+  left: -80px;
+  top: 24px;
+  width: 58px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-align: right;
+  padding-right: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.timeline-card {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  transition: transform 0.15s ease;
+}
+
+.timeline-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pink-900);
+  margin-bottom: 4px;
+}
+
+.timeline-detail {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.timeline-detail strong {
+  color: var(--pink-600);
+  font-weight: 600;
+}
+
+.timeline-warn {
+  font-size: 11px;
+  color: var(--warning);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ===== 화면 전환 ===== */
+.page {
+  display: none;
+  min-height: 100vh;
+}
+
+.page.active { display: block; }
+
+/* ===== 모달 ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(75, 21, 40, 0.4);
+  z-index: 100;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--white);
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 32px;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--pink-900);
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pink-600);
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--gray-bg);
+  outline: none;
+}
+
+textarea.form-input {
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.form-input:focus, .form-select:focus { border-color: var(--pink-400); background: var(--white); }
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-cancel {
+  background: var(--gray-bg);
+  color: var(--text-secondary);
+}
+
+.btn-primary {
+  background: var(--pink-400);
+  color: var(--white);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.btn:active { transform: scale(0.97); }
+
+/* ===== 빈 상태 ===== */
+.empty {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* ===== 토스트 ===== */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--pink-900);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-10px);
+}
+
+/* ===== 환율 박스 ===== */
+.exchange-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.exchange-left { flex: 1; }
+
+.exchange-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.exchange-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pink-900);
+}
+
+.exchange-edit-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pink-400);
+  padding: 6px 14px;
+  background: var(--pink-50);
+  border-radius: 100px;
+}
+
+.exchange-edit-btn:active { background: var(--pink-100); }
+
+body.view-mode .exchange-edit-btn { display: none; }
+
+/* 비용 항목 엔화 표시 */
+.cost-currency-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 100px;
+  margin-left: 4px;
+  vertical-align: 2px;
+}
+
+.cost-currency-badge.jpy {
+  background: rgba(212, 83, 126, 0.1);
+  color: var(--pink-400);
+}
+
+/* ===== 읽기 전용 모드 ===== */
+body.view-mode .btn-add { display: none !important; }
+body.view-mode .check-actions { display: none !important; }
+body.view-mode .checkbox { pointer-events: none; opacity: 0.6; }
+body.view-mode .check-item { cursor: default; }
+body.view-mode .check-item .check-text { pointer-events: none; }
+body.view-mode .cost-item-right { cursor: default; pointer-events: none; }
+body.view-mode .cost-item-left { cursor: default; pointer-events: none; }
+body.view-mode .timeline-item { cursor: default; }
+
+/* 친구 모드 배지 */
+.view-badge {
+  display: none;
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--pink-400);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 100px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(212, 83, 126, 0.3);
+}
+
+body.view-mode .view-badge { display: block; }
+body.view-mode { padding-top: 30px; }
+
+.info-banner {
+  background: var(--pink-50);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: var(--pink-600);
+  line-height: 1.5;
+}
+
+.info-banner strong { color: var(--pink-900); }
+
+</style>
+</head>
+<body>
+
+<div class="view-badge">👀 공유받은 모드 (읽기 전용)</div>
+
+<!-- ===== 메인 화면 ===== -->
+<div class="page active" id="page-home">
+  <div class="header">
+    <div class="header-top">
+      <span class="header-logo">✈️ 도쿄 4인방</span>
+      <button class="share-btn" onclick="generateShareLink()">🔗 공유</button>
+      <button class="share-btn" onclick="resetAllData()" style="padding: 6px 10px;" title="데이터 초기화">🔄</button>
+    </div>
+    <div class="header-title-row">
+      <span class="header-dday" id="dday">D-42</span>
+      <span class="header-sub">6/19 출발까지</span>
+    </div>
+  </div>
+  <div class="progress-section">
+    <div class="progress-label">
+      <span class="progress-label-text">전체 진행률</span>
+      <span class="progress-label-pct" id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="now-card" id="now-card" onclick="showPage('checklist')">
+      <div class="now-card-label">⏰ 지금 할 일</div>
+      <div class="now-card-title" id="now-title">로딩 중...</div>
+      <div class="now-card-sub" id="now-sub"></div>
+    </div>
+
+    <div class="section-title">일정</div>
+
+    <div class="day-card" onclick="showDay('day1')">
+      <div class="day-icon pink">🏰</div>
+      <div class="day-info">
+        <div class="day-title">6/19 (금) 디즈니랜드</div>
+        <div class="day-sub">12:00 도착 · 21:00 폐장</div>
+      </div>
+      <div class="day-arrow">›</div>
+    </div>
+
+    <div class="day-card" onclick="showDay('day2')">
+      <div class="day-icon blue">🌊</div>
+      <div class="day-info">
+        <div class="day-title">6/20 (토) 디즈니씨</div>
+        <div class="day-sub">오픈런 06:30 출발</div>
+      </div>
+      <div class="day-arrow">›</div>
+    </div>
+
+    <div class="day-card" onclick="showDay('day3')">
+      <div class="day-icon amber">🎢</div>
+      <div class="day-info">
+        <div class="day-title">6/21 (일) 후지큐</div>
+        <div class="day-sub">신주쿠 07:00 출발</div>
+      </div>
+      <div class="day-arrow">›</div>
+    </div>
+
+    <div class="day-card" onclick="showDay('day4')">
+      <div class="day-icon green">🛍️</div>
+      <div class="day-info">
+        <div class="day-title">6/22 (월) 시부야 + 출국</div>
+        <div class="day-sub">19:35 비행기</div>
+      </div>
+      <div class="day-arrow">›</div>
+    </div>
+
+    <div class="section-title">바로가기</div>
+
+    <div class="quick-grid">
+      <div class="quick-card" onclick="showPage('checklist')">
+        <div class="quick-icon">📋</div>
+        <div class="quick-title">체크리스트</div>
+        <div class="quick-sub" id="quick-check-sub">로딩...</div>
+      </div>
+      <div class="quick-card" onclick="showPage('packing')">
+        <div class="quick-icon">🎒</div>
+        <div class="quick-title">짐 싸기</div>
+        <div class="quick-sub" id="quick-pack-sub">로딩...</div>
+      </div>
+      <div class="quick-card" onclick="showPage('cost')">
+        <div class="quick-icon">💰</div>
+        <div class="quick-title">비용 / 정산</div>
+        <div class="quick-sub">1인 분담</div>
+      </div>
+      <div class="quick-card" onclick="showPage('contact')">
+        <div class="quick-icon">📞</div>
+        <div class="quick-title">비상 연락</div>
+        <div class="quick-sub">호텔/대사관</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 체크리스트 화면 ===== -->
+<div class="page" id="page-checklist">
+  <div class="header">
+    <div class="header-top">
+      <button class="header-back" onclick="showPage('home')">‹</button>
+      <span class="header-logo">출국 전 체크리스트</span>
+      <button class="share-btn" onclick="generateShareLink()">🔗 공유</button>
+    </div>
+    <div class="header-page-title">예약 / 준비 항목</div>
+    <div class="header-page-sub" id="check-page-sub">로딩 중...</div>
+  </div>
+
+  <div class="content">
+    <div id="check-list"></div>
+  </div>
+
+  <button class="btn-add" style="position: fixed; bottom: 20px; right: 20px; padding: 14px 20px; background: var(--pink-400); color: white; border-radius: 100px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(212, 83, 126, 0.3); z-index: 50;" onclick="openModal('check')">+ 추가</button>
+</div>
+
+<!-- ===== 짐싸기 화면 ===== -->
+<div class="page" id="page-packing">
+  <div class="header">
+    <div class="header-top">
+      <button class="header-back" onclick="showPage('home')">‹</button>
+      <span class="header-logo">짐 싸기</span>
+      <button class="share-btn" onclick="generateShareLink()">🔗 공유</button>
+    </div>
+    <div class="header-page-title">D-2부터 추천</div>
+    <div class="header-page-sub" id="pack-page-sub">로딩 중...</div>
+  </div>
+
+  <div class="content">
+    <div class="info-banner">
+      <strong>💡 첫날 디즈니 갈 때</strong><br>
+      기내 가방은 디즈니에서 쓸 거, 캐리어는 락커 보관
+    </div>
+    <div id="pack-list"></div>
+  </div>
+
+  <button class="btn-add" style="position: fixed; bottom: 20px; right: 20px; padding: 14px 20px; background: var(--pink-400); color: white; border-radius: 100px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(212, 83, 126, 0.3); z-index: 50;" onclick="openModal('pack')">+ 추가</button>
+</div>
+
+<!-- ===== 비용 화면 ===== -->
+<div class="page" id="page-cost">
+  <div class="header">
+    <div class="header-top">
+      <button class="header-back" onclick="showPage('home')">‹</button>
+      <span class="header-logo">비용 / 정산</span>
+      <button class="share-btn" onclick="generateShareLink()">🔗 공유</button>
+    </div>
+    <div class="header-page-title">1인 분담 기준</div>
+    <div class="header-page-sub">4명 균등 분담</div>
+  </div>
+
+  <div class="content">
+    <div class="exchange-box">
+      <div class="exchange-left">
+        <div class="exchange-label">💴 환율 (수동 설정)</div>
+        <div class="exchange-value">100엔 = <span id="exchange-display">950</span>원</div>
+      </div>
+      <button class="exchange-edit-btn" onclick="openExchangeModal()">수정</button>
+    </div>
+
+    <div class="cost-hero">
+      <div class="cost-hero-label">현재까지 1인 부담</div>
+      <div class="cost-hero-num" id="cost-total">0원</div>
+      <div class="cost-hero-sub" id="cost-est">예상 총액 약 145만원</div>
+    </div>
+
+    <div id="cost-list"></div>
+
+    <div class="settlement-box">
+      <div class="settlement-label">💳 결제자 정산</div>
+      <div class="settlement-row">
+        <span>루루가 결제한 총액</span>
+        <span style="font-weight: 600; color: var(--pink-600);" id="settle-paid">0원</span>
+      </div>
+      <div class="settlement-row">
+        <span>각자 분담액</span>
+        <span style="color: var(--text-secondary);" id="settle-share">0원</span>
+      </div>
+      <div class="settlement-row total">
+        <span>3명한테 받을 돈</span>
+        <span id="settle-receive">0원</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-add" style="position: fixed; bottom: 20px; right: 20px; padding: 14px 20px; background: var(--pink-400); color: white; border-radius: 100px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(212, 83, 126, 0.3); z-index: 50;" onclick="openModal('cost')">+ 추가</button>
+</div>
+
+<!-- ===== 비상연락 ===== -->
+<div class="page" id="page-contact">
+  <div class="header">
+    <div class="header-top">
+      <button class="header-back" onclick="showPage('home')">‹</button>
+      <span class="header-logo">비상 연락처</span>
+      <button class="share-btn" onclick="generateShareLink()">🔗 공유</button>
+    </div>
+    <div class="header-page-title">탭하면 바로 전화</div>
+  </div>
+
+  <div class="content">
+    <div class="section-title">🏨 우리 호텔</div>
+    <div class="contact-card hotel">
+      <div class="contact-name">Oriental Hotel Tokyo Bay</div>
+      <div class="contact-detail">치바 우라야스시 미하마 1-8-2</div>
+      <div class="contact-actions">
+        <a href="tel:+81473508111" class="contact-btn">📞 047-350-8111</a>
+        <a href="https://maps.google.com/?q=Oriental+Hotel+Tokyo+Bay" class="contact-btn" target="_blank">📍 지도</a>
+      </div>
+    </div>
+
+    <div class="section-title">🚨 긴급</div>
+    <a href="tel:+81335837849" class="contact-row">
+      <div class="contact-row-left">
+        <div class="contact-row-icon">🇰🇷</div>
+        <div>
+          <div class="contact-row-name">한국 대사관 (도쿄)</div>
+          <div class="contact-row-sub">24시간 영사 콜센터</div>
+        </div>
+      </div>
+      <div class="contact-row-arrow">📞</div>
+    </a>
+
+    <a href="tel:119" class="contact-row">
+      <div class="contact-row-left">
+        <div class="contact-row-icon">🚑</div>
+        <div>
+          <div class="contact-row-name">일본 응급 (119)</div>
+          <div class="contact-row-sub">구급차 / 소방</div>
+        </div>
+      </div>
+      <div class="contact-row-arrow">📞</div>
+    </a>
+
+    <a href="tel:110" class="contact-row">
+      <div class="contact-row-left">
+        <div class="contact-row-icon">🚓</div>
+        <div>
+          <div class="contact-row-name">일본 경찰 (110)</div>
+          <div class="contact-row-sub">사건 / 사고</div>
+        </div>
+      </div>
+      <div class="contact-row-arrow">📞</div>
+    </a>
+
+    <div class="section-title">💳 서비스</div>
+    <a href="https://www.klook.com/ko/" class="contact-row" target="_blank">
+      <div class="contact-row-left">
+        <div class="contact-row-icon">🎫</div>
+        <div>
+          <div class="contact-row-name">클룩 고객센터</div>
+          <div class="contact-row-sub">카카오톡 상담</div>
+        </div>
+      </div>
+      <div class="contact-row-arrow">↗</div>
+    </a>
+
+    <div class="contact-row" onclick="showToast('카드사 분실신고 전화 직접 등록')">
+      <div class="contact-row-left">
+        <div class="contact-row-icon">💳</div>
+        <div>
+          <div class="contact-row-name">카드사 해외 분실</div>
+          <div class="contact-row-sub">결제 차단 / 분실</div>
+        </div>
+      </div>
+      <div class="contact-row-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 일정 상세 ===== -->
+<div class="page" id="page-day">
+  <div class="header">
+    <div class="header-top">
+      <button class="header-back" onclick="showPage('home')">‹</button>
+      <span class="header-logo" id="day-page-logo">일정</span>
+      <button class="share-btn" onclick="generateShareLink()">🔗 공유</button>
+    </div>
+    <div class="header-page-title" id="day-page-title">날짜</div>
+    <div class="header-page-sub" id="day-page-sub">시간순 타임라인</div>
+  </div>
+  <div class="content">
+    <div class="timeline" id="day-timeline"></div>
+  </div>
+  <button class="btn-add" style="position: fixed; bottom: 20px; right: 20px; padding: 14px 20px; background: var(--pink-400); color: white; border-radius: 100px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(212, 83, 126, 0.3); z-index: 50;" onclick="openDayModal()">+ 추가</button>
+</div>
+
+<!-- ===== 친구 공유 모달 ===== -->
+<div class="modal-overlay" id="share-modal-overlay">
+  <div class="modal">
+    <div class="modal-title">🔗 친구한테 보낼 링크</div>
+    <div class="info-banner">
+      <strong>💡 공유 옵션 선택</strong><br>
+      친구한테 어디까지 보여줄지 골라
+    </div>
+    
+    <div id="share-step-1">
+      <div class="form-group">
+        <label class="form-label">📑 공유 범위</label>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label class="share-option-card">
+            <input type="radio" name="share-scope" value="all" checked>
+            <div>
+              <div class="share-option-title">📦 전체 공유</div>
+              <div class="share-option-sub">모든 페이지 다 보임 (기본)</div>
+            </div>
+          </label>
+          <label class="share-option-card">
+            <input type="radio" name="share-scope" value="custom">
+            <div>
+              <div class="share-option-title">✂️ 선택 공유</div>
+              <div class="share-option-sub">원하는 항목만 골라서</div>
+            </div>
+          </label>
+          <label class="share-option-card">
+            <input type="radio" name="share-scope" value="current">
+            <div>
+              <div class="share-option-title">📄 현재 페이지만</div>
+              <div class="share-option-sub" id="share-current-page">메인 화면</div>
+            </div>
+          </label>
+        </div>
+      </div>
+      
+      <!-- 선택 공유 체크박스 -->
+      <div class="form-group" id="share-custom-options" style="display:none;">
+        <label class="form-label">포함할 항목</label>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label class="share-check-row">
+            <input type="checkbox" data-key="days" checked>
+            <span>📅 일정 (4일 타임라인)</span>
+          </label>
+          <label class="share-check-row">
+            <input type="checkbox" data-key="checklist" checked>
+            <span>📋 체크리스트</span>
+          </label>
+          <label class="share-check-row">
+            <input type="checkbox" data-key="packing">
+            <span>🎒 짐 싸기</span>
+          </label>
+          <label class="share-check-row">
+            <input type="checkbox" data-key="costs">
+            <span>💰 비용 / 정산</span>
+          </label>
+          <label class="share-check-row">
+            <input type="checkbox" data-key="contact" checked>
+            <span>📞 비상 연락처</span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeShareModal()">취소</button>
+        <button class="btn btn-primary" onclick="confirmShare()">링크 만들기</button>
+      </div>
+    </div>
+    
+    <!-- 링크 생성 후 -->
+    <div id="share-step-2" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">링크 (<span id="share-url-length">0</span>자)</label>
+        <textarea class="form-input" id="share-url-display" rows="4" readonly style="font-size: 11px; word-break: break-all; font-family: monospace;"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeShareModal()">닫기</button>
+        <button class="btn btn-primary" onclick="shareViaSystem()">📤 보내기</button>
+      </div>
+      <div style="margin-top: 8px;">
+        <button class="btn" style="width:100%; background: var(--pink-50); color: var(--pink-600);" onclick="copyShareUrl()">📋 링크 복사</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 모달 ===== -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">새 항목 추가</div>
+    <div class="form-group" id="modal-time-group" style="display:none;">
+      <label class="form-label">시간</label>
+      <input type="text" class="form-input" id="modal-time" placeholder="예: 12:30 또는 14:00~17:00">
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="modal-name-label">이름</label>
+      <input type="text" class="form-input" id="modal-name" placeholder="예: 디즈니 공식 앱 설치">
+    </div>
+    <div class="form-group" id="modal-cat-group">
+      <label class="form-label">카테고리</label>
+      <select class="form-select" id="modal-cat"></select>
+    </div>
+    <div class="form-group" id="modal-meta-group">
+      <label class="form-label">메모 (선택)</label>
+      <input type="text" class="form-input" id="modal-meta" placeholder="예: 1인 25,000원">
+    </div>
+    <div class="form-group" id="modal-detail-group" style="display:none;">
+      <label class="form-label">상세 설명 (선택)</label>
+      <textarea class="form-input" id="modal-detail" rows="3" placeholder="예: 위치, 비용, 주의사항 등"></textarea>
+    </div>
+    <div class="form-group" id="modal-duration-group" style="display:none;">
+      <label class="form-label">소요 시간 (선택, 비우면 자동 계산)</label>
+      <input type="text" class="form-input" id="modal-duration" placeholder="예: 30분 또는 1시간 30분">
+    </div>
+    <div class="form-group" id="modal-currency-group" style="display:none;">
+      <label class="form-label">통화</label>
+      <div style="display:flex;gap:8px;">
+        <label style="flex:1;display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--gray-bg);font-size:13px;font-weight:600;" id="curr-krw-label">
+          <input type="radio" name="modal-currency" value="KRW" checked style="margin-right:6px;"> 🇰🇷 한국 (원)
+        </label>
+        <label style="flex:1;display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--gray-bg);font-size:13px;font-weight:600;" id="curr-jpy-label">
+          <input type="radio" name="modal-currency" value="JPY" style="margin-right:6px;"> 🇯🇵 일본 (엔)
+        </label>
+      </div>
+    </div>
+    <div class="form-group" id="modal-amount-group" style="display:none;">
+      <label class="form-label" id="modal-amount-label">총 금액 (4명 합계)</label>
+      <input type="number" class="form-input" id="modal-amount-total" placeholder="예: 360000" oninput="autoCalcPerPerson()">
+    </div>
+    <div class="form-group" id="modal-perperson-group" style="display:none;">
+      <label class="form-label" id="modal-perperson-label">1인 부담액</label>
+      <input type="number" class="form-input" id="modal-amount-perperson" placeholder="자동 계산됨 (총액 ÷ 4)">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn btn-danger" id="modal-delete" style="display:none;" onclick="deleteItem()">삭제</button>
+      <button class="btn btn-primary" id="modal-save" onclick="saveItem()">저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== 데이터 =====
+const TRIP_DATE = new Date(2026, 5, 19); // 6월 19일
+
+const DEFAULT_DATA = {
+  settings: {
+    exchangeRate: 9.5, // 100엔 = 950원 → 1엔 = 9.5원
+  },
+  checklist: [
+    {id: 1, cat: 'urgent', name: '호텔 예약 (Oriental Tokyo Bay)', meta: '952,128원/3박', checked: true},
+    {id: 2, cat: 'urgent', name: '디즈니랜드 입장권 4장', meta: '6/19 · 340,800원', checked: true},
+    {id: 3, cat: 'urgent', name: '디즈니씨 입장권 4장', meta: '6/20 · 358,800원', checked: true},
+    {id: 4, cat: 'urgent', name: '후지큐 알뜰 Q팩 4명', meta: '6/21 · 509,600원', checked: true},
+    {id: 5, cat: 'urgent', name: '항공권 결제 (여권 대기)', meta: '53만원/인', checked: false},
+    {id: 6, cat: 'medium', name: '디즈니 공식 앱 설치', meta: 'Tokyo Disney Resort', checked: false},
+    {id: 7, cat: 'medium', name: '블루 바이유 레스토랑 예약', meta: '5/19부터 가능', checked: false},
+    {id: 8, cat: 'medium', name: '마젤란스 레스토랑 예약', meta: '5/20부터 가능', checked: false},
+    {id: 9, cat: 'medium', name: '공항 리무진 디즈니 직행', meta: '6/19 10:45', checked: false},
+    {id: 10, cat: 'medium', name: '공항 리무진 신우라야스→나리타', meta: '6/22', checked: false},
+    {id: 11, cat: 'medium', name: '시부야 스카이 예약 (선택)', meta: '6/22 오전', checked: false},
+    {id: 12, cat: 'medium', name: '후지큐 우에노 변경 답장 확인', meta: '클룩 문의 중', checked: false},
+    {id: 13, cat: 'low', name: '이심 (eSIM) 준비', meta: '1만~2만원', checked: false},
+    {id: 14, cat: 'low', name: '트래블월렛 카드 발급', meta: '4명 다 정산용', checked: false},
+    {id: 15, cat: 'low', name: 'Visit Japan Web 등록', meta: 'D-7~D-1 사이', checked: false},
+    {id: 16, cat: 'low', name: '여행자 보험 가입', meta: '1만~2만원', checked: false},
+    {id: 17, cat: 'low', name: '현금 환전 (5~7만 엔)', meta: '코인락커/자판기용', checked: false},
+  ],
+  packing: [
+    {id: 1, cat: 'carry', name: '여권 + 지갑', meta: '필수', checked: false},
+    {id: 2, cat: 'carry', name: '보조배터리', meta: '디즈니 12시간', checked: false},
+    {id: 3, cat: 'carry', name: '충전 케이블', meta: '', checked: false},
+    {id: 4, cat: 'carry', name: '우산 + 우비', meta: '장마철', checked: false},
+    {id: 5, cat: 'carry', name: '진통제 / 멀미약', meta: '비상약', checked: false},
+    {id: 6, cat: 'carry', name: '선크림 / 립밤', meta: '', checked: false},
+    {id: 7, cat: 'carry', name: '디즈니 갈아입을 옷', meta: '땀 흘릴 거', checked: false},
+    {id: 8, cat: 'carry', name: '작은 가방 (어트랙션용)', meta: '', checked: false},
+    {id: 9, cat: 'suit', name: '편한 운동화 2족', meta: '3일 연속', checked: false},
+    {id: 10, cat: 'suit', name: '돼지코 어댑터', meta: '필수', checked: false},
+    {id: 11, cat: 'suit', name: '반팔 3~4장', meta: '6월 23~28도', checked: false},
+    {id: 12, cat: 'suit', name: '긴팔 1장', meta: '실내 에어컨', checked: false},
+    {id: 13, cat: 'suit', name: '속옷, 양말 충분히', meta: '땀 흘리면 갈아 신어야', checked: false},
+    {id: 14, cat: 'suit', name: '잠옷', meta: '', checked: false},
+    {id: 15, cat: 'suit', name: '발 패치, 압박 양말', meta: '다리 부음 방지', checked: false},
+    {id: 16, cat: 'suit', name: '세면도구', meta: '호텔에도 있음', checked: false},
+    {id: 17, cat: 'suit', name: '빈 에코백', meta: '쇼핑용', checked: false},
+  ],
+  costs: [
+    {id: 1, name: '항공권 (왕복)', total: 2120000, perPerson: 530000, currency: 'KRW', status: 'pending', icon: '✈️'},
+    {id: 2, name: '호텔 3박', total: 952128, perPerson: 238032, currency: 'KRW', status: 'done', icon: '🏨'},
+    {id: 3, name: '디즈니랜드 입장권', total: 340800, perPerson: 85200, currency: 'KRW', status: 'done', icon: '🏰'},
+    {id: 4, name: '디즈니씨 입장권', total: 358800, perPerson: 89700, currency: 'KRW', status: 'done', icon: '🌊'},
+    {id: 5, name: '후지큐 알뜰 Q팩', total: 509600, perPerson: 127400, currency: 'KRW', status: 'done', icon: '🎢'},
+    {id: 6, name: 'DPA 미녀와 야수', total: 10000, perPerson: 2500, currency: 'JPY', status: 'pending', icon: '🌹'},
+    {id: 7, name: '공항 리무진 (왕복)', total: 18000, perPerson: 4500, currency: 'JPY', status: 'pending', icon: '🚌'},
+    {id: 8, name: '식비 (3박 4일)', total: 80000, perPerson: 20000, currency: 'JPY', status: 'pending', icon: '🍣'},
+    {id: 9, name: '시내 교통비', total: 20000, perPerson: 5000, currency: 'JPY', status: 'pending', icon: '🚇'},
+    {id: 10, name: '이심 + 보험', total: 140000, perPerson: 35000, currency: 'KRW', status: 'pending', icon: '📱'},
+  ],
+  days: {
+    day1: {
+      title: '6/19 (금) 디즈니랜드',
+      sub: '도착 + 디즈니랜드',
+      items: [
+        {time: '04:30', title: '보령 출발', detail: '차에서 자도 됨'},
+        {time: '07:20', title: '청주공항 → 나리타', detail: '<strong>비행기에서 무조건 자기</strong>'},
+        {time: '09:40', title: '나리타 도착', detail: 'Visit Japan Web QR 준비 · 입국심사 30분'},
+        {time: '10:45', title: '공항 리무진 디즈니 직행', detail: '📍 1터미널 12번 카운터<br>💰 9,000엔 (4명)<br>💬 "Tokyo Disney Resort, 4 people"'},
+        {time: '12:00', title: '디즈니랜드 도착', detail: '⚠️ 코인락커 즉시 보관<br>📍 버스 터미널 옆 XXL 락커<br>💰 약 4,000엔 (4개)'},
+        {time: '12:15', title: '입장 + DPA 결제', detail: '<strong>미녀와 야수 DPA 즉시!</strong><br>💰 1인 25,000원<br>매진 임박'},
+        {time: '13:00', title: '점심 (퀸 오브 하트)', detail: '🥗 채식 친구 베지 카레 OK'},
+        {time: '14:00~19:00', title: '어트랙션 + 캐릭터', detail: '빅 썬더 마운틴, 스플래시, 헌티드 맨션, 캐리비안 해적, 신데렐라 성 사진'},
+        {time: '19:30', title: '드림라이츠 자리 잡기', detail: '⚠️ 1시간 전부터 자리 잡기 필수<br>📍 신데렐라 성 앞 메인 거리'},
+        {time: '20:00', title: '🎆 드림라이츠 야간 퍼레이드', detail: '디즈니랜드 시그니처! 45분'},
+        {time: '21:00', title: '폐장 → 짐 픽업', detail: '월드 바자르 마지막 쇼핑'},
+        {time: '21:30', title: '호텔 무료 셔틀', detail: '디즈니랜드 버스 터미널 → Oriental Hotel'},
+        {time: '22:00', title: '호텔 체크인', detail: '24시간 직원, 영어 OK'},
+      ]
+    },
+    day2: {
+      title: '6/20 (토) 디즈니씨',
+      sub: '판타지 스프링스 공략 데이',
+      items: [
+        {time: '06:30', title: '호텔 출발', detail: '편의점 아침 ㄱㄱ'},
+        {time: '06:45', title: '호텔 셔틀 → 디즈니씨', detail: '무료, 15분'},
+        {time: '07:00', title: '디즈니씨 입장 줄', detail: '⚠️ 오픈런 필수'},
+        {time: '09:00', title: '입장 + 판타지 스프링스 패스', detail: '<strong>즉시 앱으로 스탠바이패스 발급</strong><br>라푼젤/엘사/피터팬<br>매진 빠름!'},
+        {time: '10:00~12:00', title: '판타지 스프링스', detail: '신구역 라푼젤, 피터팬, 겨울왕국'},
+        {time: '13:00', title: '점심 (카스바 푸드코트)', detail: '🥗 채식 베지 카레'},
+        {time: '14:00~17:00', title: '어트랙션', detail: '소링, 타워 오브 테러, 토이스토리, 인디아나존스'},
+        {time: '17:00~18:30', title: '다피 & 프렌즈 굿즈', detail: '⭐ 도쿄 한정 인형! 인스타용'},
+        {time: '18:30', title: '저녁 (마젤란스)', detail: '🍴 파인다이닝, 채식 코스 예약 필수'},
+        {time: '20:00', title: 'Believe! 자리 잡기', detail: '메디테레이니언 하버'},
+        {time: '21:00', title: '🎆 Believe! Sea of Dreams', detail: '디즈니씨 야간 쇼!'},
+        {time: '22:00', title: '호텔 셔틀 복귀', detail: '막차 22:45'},
+      ]
+    },
+    day3: {
+      title: '6/21 (일) 후지큐',
+      sub: '절규 머신 풀데이',
+      items: [
+        {time: '05:30', title: '호텔 컨시어지 택시 호출', detail: '전날 밤 미리 부탁'},
+        {time: '06:00', title: '호텔 → 신주쿠 택시', detail: '약 60분, 12,000엔 (4명 분담)'},
+        {time: '07:00', title: '신주쿠 → 후지큐 버스', detail: '⚠️ 신주쿠 버스타 4층<br>약 110분'},
+        {time: '09:15', title: '후지큐 도착', detail: ''},
+        {time: '09:30', title: '🎢 입장!', detail: '풀데이 11시간'},
+        {time: '09:30~13:00', title: '4대 절규머신', detail: '후지야마, 도돈파, 에에자나이카, 타카비샤'},
+        {time: '13:00', title: '점심 (푸드코트)', detail: ''},
+        {time: '14:00', title: '진격의 거인 라이드', detail: '💰 1인 1,000엔 별도'},
+        {time: '15:00', title: '전율미궁 (50분 호러)', detail: '💰 1인 500엔 별도'},
+        {time: '17:00~20:00', title: '재탑승 + 후지산 사진', detail: ''},
+        {time: '20:00', title: '후지큐 → 신주쿠 버스', detail: '110분'},
+        {time: '22:10', title: '신주쿠 → 호텔', detail: '지하철 1시간'},
+        {time: '23:00', title: '호텔 도착', detail: '⚠️ 다음날 출국 준비'},
+      ]
+    },
+    day4: {
+      title: '6/22 (월) 시부야 + 출국',
+      sub: '컨디션 봐서 결정',
+      items: [
+        {time: '09:00', title: '호텔 체크아웃', detail: '짐 호텔 보관'},
+        {time: '09:30', title: '시부야 이동 (선택)', detail: '컨디션 좋으면 ㄱㄱ'},
+        {time: '10:00', title: '시부야 스카이 (예약시)', detail: '평일 한산 ⭐'},
+        {time: '11:00', title: '스크램블 + 메이지신궁', detail: '하라주쿠 다케시타도 OK'},
+        {time: '13:00', title: '호텔 복귀, 짐 픽업', detail: ''},
+        {time: '14:00', title: '점심 (호텔 근처)', detail: ''},
+        {time: '15:00', title: '공항 리무진 → 나리타', detail: '신우라야스역 출발'},
+        {time: '16:30', title: '나리타 도착', detail: '체크인'},
+        {time: '19:35', title: '✈️ 출국', detail: '청주행'},
+        {time: '21:55', title: '청주 도착', detail: '🏠 보령까지'},
+      ]
+    }
+  }
+};
+
+let data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+let editingType = null;
+let editingId = null;
+let isViewMode = false;
+let urlData = null; // URL에서 받은 데이터 (친구가 받은 링크)
+
+// URL 모드 체크
+function checkViewMode() {
+  const params = new URLSearchParams(window.location.search);
+  
+  // ?d=... 있으면 URL 데이터 모드 (친구가 받은 링크)
+  const d = params.get('d');
+  if (d) {
+    try {
+      const decoded = decodeURIComponent(escape(atob(d)));
+      urlData = JSON.parse(decoded);
+      isViewMode = true;
+      document.body.classList.add('view-mode');
+      return;
+    } catch(e) {
+      console.error('URL 데이터 디코딩 실패', e);
+      alert('링크가 손상됐어. 다시 받아줘.');
+    }
+  }
+  
+  // ?view=share면 기본 데이터 읽기 전용
+  if (params.get('view') === 'share') {
+    isViewMode = true;
+    document.body.classList.add('view-mode');
+  }
+}
+
+// localStorage 로드
+function loadData() {
+  // URL에 데이터 있으면 그거 사용 (친구가 받은 링크)
+  if (urlData) {
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    // urlData에 있는 부분만 덮어쓰기
+    if (urlData.checklist) data.checklist = urlData.checklist;
+    if (urlData.packing) data.packing = urlData.packing;
+    if (urlData.costs) data.costs = urlData.costs;
+    if (urlData.days) data.days = urlData.days;
+    if (urlData.settings) data.settings = urlData.settings;
+    // 보정
+    if (!data.settings) data.settings = JSON.parse(JSON.stringify(DEFAULT_DATA.settings));
+    if (!data.settings.exchangeRate) data.settings.exchangeRate = 9.5;
+    return;
+  }
+  
+  // 읽기 전용 모드(?view=share)면 DEFAULT_DATA
+  if (isViewMode) {
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    return;
+  }
+  
+  const saved = localStorage.getItem('tokyoTrip2026');
+  if (saved) {
+    try {
+      data = JSON.parse(saved);
+      // 누락된 키 보정
+      if (!data.checklist) data.checklist = DEFAULT_DATA.checklist;
+      if (!data.packing) data.packing = DEFAULT_DATA.packing;
+      if (!data.costs) data.costs = DEFAULT_DATA.costs;
+      if (!data.days) data.days = DEFAULT_DATA.days;
+      if (!data.settings) data.settings = JSON.parse(JSON.stringify(DEFAULT_DATA.settings));
+      if (!data.settings.exchangeRate) data.settings.exchangeRate = 9.5;
+      
+      // 옛 데이터 마이그레이션 + 무결성 보정
+      data.costs.forEach((c, idx) => {
+        // 옛 amount → total/perPerson
+        if (c.amount !== undefined && c.total === undefined) {
+          c.perPerson = c.amount;
+          c.total = c.amount * 4;
+          delete c.amount;
+        }
+        if (!c.currency) c.currency = 'KRW';
+        
+        // 둘 다 비어있으면 DEFAULT에서 찾아서 복원
+        if ((!c.total || c.total === 0) && (!c.perPerson || c.perPerson === 0)) {
+          const original = DEFAULT_DATA.costs.find(d => d.id === c.id || d.name === c.name);
+          if (original) {
+            c.total = original.total;
+            c.perPerson = original.perPerson;
+            if (!c.currency) c.currency = original.currency;
+            if (!c.icon) c.icon = original.icon;
+          }
+        }
+        
+        // 그래도 비어있으면 0
+        if (c.total === undefined || c.total === null) c.total = 0;
+        if (c.perPerson === undefined || c.perPerson === null) c.perPerson = 0;
+        
+        // total만 있고 perPerson 없으면 자동 계산
+        if (c.total > 0 && c.perPerson === 0) {
+          c.perPerson = Math.round(c.total / 4);
+        }
+        // perPerson만 있고 total 없으면 자동 계산
+        if (c.perPerson > 0 && c.total === 0) {
+          c.total = c.perPerson * 4;
+        }
+      });
+      saveData();
+    } catch(e) {
+      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+  }
+}
+
+function saveData() {
+  if (isViewMode) return; // 읽기 전용 모드면 저장 안 함
+  localStorage.setItem('tokyoTrip2026', JSON.stringify(data));
+}
+
+// ===== 화면 전환 =====
+function showPage(pageId) {
+  // 현재 페이지 추적
+  currentPage = pageId;
+  
+  // 공유받은 모드 + 페이지 잠금 체크
+  if (urlData && urlData._lockTo) {
+    if (pageId !== urlData._lockTo) {
+      showToast('이 화면만 공유받았어');
+      return;
+    }
+  }
+  
+  // 공유받은 모드 + 메뉴 숨김 체크
+  if (urlData && urlData._hide && urlData._hide[pageId]) {
+    showToast('이 항목은 공유 안 됐어');
+    return;
+  }
+  
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  window.scrollTo(0, 0);
+  if (pageId === 'home') renderHome();
+  if (pageId === 'checklist') renderChecklist();
+  if (pageId === 'packing') renderPacking();
+  if (pageId === 'cost') renderCost();
+}
+
+function showDay(dayId) {
+  // 공유받은 모드 + 일정 잠금
+  if (urlData && urlData._lockTo === 'day' && urlData._lockDayId && dayId !== urlData._lockDayId) {
+    showToast('이 일정만 공유받았어');
+    return;
+  }
+  if (urlData && urlData._hide && urlData._hide.days) {
+    showToast('일정은 공유 안 됐어');
+    return;
+  }
+  
+  const day = data.days[dayId];
+  if (!day) return;
+  currentPage = 'day';
+  currentDayId = dayId;
+  document.getElementById('day-page-logo').textContent = day.sub;
+  document.getElementById('day-page-title').textContent = day.title;
+  
+  // 원본 idx 추적하면서 시간순 정렬
+  const sortedItems = day.items.map((item, idx) => ({...item, _idx: idx}))
+    .sort((a, b) => {
+      const aTime = (a.time || '').split('~')[0].trim();
+      const bTime = (b.time || '').split('~')[0].trim();
+      return aTime.localeCompare(bTime);
+    });
+  
+  // 각 일정의 소요 시간 계산
+  sortedItems.forEach((item, i) => {
+    // 수동 입력이 있으면 우선
+    if (item.duration && item.duration.trim()) {
+      item._displayDuration = item.duration;
+      return;
+    }
+    
+    // 시간 범위 형식 (예: "14:00~17:00") - 직접 계산
+    if (item.time && item.time.includes('~')) {
+      const [start, end] = item.time.split('~').map(s => s.trim());
+      const startMin = parseTimeToMinutes(start);
+      const endMin = parseTimeToMinutes(end);
+      if (startMin !== null && endMin !== null) {
+        const diff = endMin - startMin;
+        if (diff > 0) {
+          item._displayDuration = formatDuration(diff);
+          return;
+        }
+      }
+    }
+    
+    // 단일 시간 - 다음 일정과의 차이 계산
+    const next = sortedItems[i + 1];
+    if (next) {
+      const curMin = parseTimeToMinutes((item.time || '').split('~')[0].trim());
+      const nextMin = parseTimeToMinutes((next.time || '').split('~')[0].trim());
+      if (curMin !== null && nextMin !== null && nextMin > curMin) {
+        item._displayDuration = formatDuration(nextMin - curMin);
+        return;
+      }
+    }
+    
+    item._displayDuration = '';
+  });
+  
+  const timeline = document.getElementById('day-timeline');
+  timeline.innerHTML = sortedItems.map(item => `
+    <div class="timeline-item" onclick="editDayItem(${item._idx})">
+      <div class="timeline-dot"></div>
+      ${item._displayDuration ? `<div class="timeline-duration">${item._displayDuration}</div>` : ''}
+      <div class="timeline-time">${item.time || ''}</div>
+      <div class="timeline-card">
+        <div class="timeline-title">${item.title}</div>
+        ${item.detail ? `<div class="timeline-detail">${item.detail}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+  
+  showPage('day');
+}
+
+// 시간 문자열을 분 단위로 변환 ("06:30" → 390)
+function parseTimeToMinutes(timeStr) {
+  if (!timeStr) return null;
+  const match = timeStr.match(/^(\d{1,2}):(\d{2})$/);
+  if (!match) return null;
+  return parseInt(match[1]) * 60 + parseInt(match[2]);
+}
+
+// 분 → "1시간 30분" 형식
+function formatDuration(min) {
+  if (min < 60) return `${min}분`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (m === 0) return `${h}시간`;
+  return `${h}시간 ${m}분`;
+}
+
+let currentDayId = null;
+
+// ===== D-day 계산 =====
+function updateDday() {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const diff = Math.ceil((TRIP_DATE - now) / (1000 * 60 * 60 * 24));
+  document.getElementById('dday').textContent = diff > 0 ? `D-${diff}` : (diff === 0 ? 'D-DAY' : `D+${-diff}`);
+}
+
+// ===== 메인 렌더 =====
+function renderHome() {
+  updateDday();
+  
+  // 공유받은 모드에서 숨김 처리
+  if (urlData && urlData._hide) {
+    const hide = urlData._hide;
+    // 일정 카드 숨기기
+    document.querySelectorAll('#page-home .day-card').forEach(el => {
+      el.style.display = hide.days ? 'none' : '';
+    });
+    // 바로가기 카드 숨기기
+    const quickCards = document.querySelectorAll('#page-home .quick-card');
+    if (quickCards[0]) quickCards[0].style.display = hide.checklist ? 'none' : ''; // 체크리스트
+    if (quickCards[1]) quickCards[1].style.display = hide.packing ? 'none' : ''; // 짐
+    if (quickCards[2]) quickCards[2].style.display = hide.costs ? 'none' : ''; // 비용
+    if (quickCards[3]) quickCards[3].style.display = hide.contact ? 'none' : ''; // 연락
+  }
+  
+  const checked = data.checklist.filter(i => i.checked).length;
+  const total = data.checklist.length;
+  const pct = total > 0 ? Math.round(checked / total * 100) : 0;
+  document.getElementById('progress-pct').textContent = `${pct}%`;
+  document.getElementById('progress-fill').style.width = `${pct}%`;
+  
+  // 지금 할 일 = 가장 시급한 미완료
+  const order = {urgent: 0, medium: 1, low: 2};
+  const nextItem = [...data.checklist]
+    .filter(i => !i.checked)
+    .sort((a,b) => (order[a.cat]||9) - (order[b.cat]||9))[0];
+  
+  if (nextItem) {
+    document.getElementById('now-title').textContent = nextItem.name;
+    document.getElementById('now-sub').textContent = nextItem.meta || '체크리스트에서 확인';
+  } else {
+    document.getElementById('now-title').textContent = '모두 완료! 출발만 남았어';
+    document.getElementById('now-sub').textContent = '🎉';
+  }
+  
+  // 바로가기 서브
+  document.getElementById('quick-check-sub').textContent = `${checked}/${total} 완료`;
+  const packedCount = data.packing.filter(i => i.checked).length;
+  document.getElementById('quick-pack-sub').textContent = `${packedCount}/${data.packing.length} 완료`;
+}
+
+// ===== 체크리스트 =====
+function renderChecklist() {
+  const checked = data.checklist.filter(i => i.checked).length;
+  document.getElementById('check-page-sub').textContent = `${checked}/${data.checklist.length} 완료 · ${Math.round(checked/data.checklist.length*100)}%`;
+  
+  const groups = {
+    urgent: {title: '🔴 시급', items: data.checklist.filter(i => i.cat === 'urgent')},
+    medium: {title: '🟡 5월 중', items: data.checklist.filter(i => i.cat === 'medium')},
+    low: {title: '🟢 6월 중', items: data.checklist.filter(i => i.cat === 'low')},
+  };
+  
+  const html = Object.keys(groups).map(key => {
+    const g = groups[key];
+    if (g.items.length === 0) return '';
+    return `
+      <div class="check-group">
+        <div class="check-group-title ${key}">${g.title}</div>
+        ${g.items.map(item => `
+          <div class="check-item ${item.checked ? 'checked' : ''}">
+            <div class="checkbox" onclick="toggleCheck(${item.id})"></div>
+            <div class="check-text" onclick="toggleCheck(${item.id})">
+              ${item.name}
+              ${item.meta ? `<div class="check-meta">${item.meta}</div>` : ''}
+            </div>
+            <div class="check-actions">
+              <button class="check-action-btn" onclick="editItem('check', ${item.id})">✎</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+  
+  document.getElementById('check-list').innerHTML = html || '<div class="empty">항목이 없어요</div>';
+}
+
+function toggleCheck(id) {
+  if (isViewMode) return;
+  const item = data.checklist.find(i => i.id === id);
+  if (item) {
+    item.checked = !item.checked;
+    saveData();
+    renderChecklist();
+  }
+}
+
+// ===== 짐 =====
+function renderPacking() {
+  const checked = data.packing.filter(i => i.checked).length;
+  document.getElementById('pack-page-sub').textContent = `${checked}/${data.packing.length} 챙김`;
+  
+  const groups = {
+    carry: {title: '✈️ 기내 가방 (작게)', items: data.packing.filter(i => i.cat === 'carry')},
+    suit: {title: '🧳 캐리어', items: data.packing.filter(i => i.cat === 'suit')},
+  };
+  
+  const html = Object.keys(groups).map(key => {
+    const g = groups[key];
+    if (g.items.length === 0) return '';
+    return `
+      <div class="check-group">
+        <div class="check-group-title urgent">${g.title}</div>
+        ${g.items.map(item => `
+          <div class="check-item ${item.checked ? 'checked' : ''}">
+            <div class="checkbox" onclick="togglePack(${item.id})"></div>
+            <div class="check-text" onclick="togglePack(${item.id})">
+              ${item.name}
+              ${item.meta ? `<div class="check-meta">${item.meta}</div>` : ''}
+            </div>
+            <div class="check-actions">
+              <button class="check-action-btn" onclick="editItem('pack', ${item.id})">✎</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+  
+  document.getElementById('pack-list').innerHTML = html || '<div class="empty">항목이 없어요</div>';
+}
+
+function togglePack(id) {
+  if (isViewMode) return;
+  const item = data.packing.find(i => i.id === id);
+  if (item) {
+    item.checked = !item.checked;
+    saveData();
+    renderPacking();
+  }
+}
+
+// ===== 비용 =====
+function renderCost() {
+  const rate = (data.settings && data.settings.exchangeRate) || 9.5;
+  
+  // 환율 표시 (100엔 기준)
+  document.getElementById('exchange-display').textContent = Math.round(rate * 100);
+  
+  // 1인 부담액 원화 환산 합계
+  const totalPerPerson = data.costs.reduce((sum, c) => {
+    return sum + toKRW(c.perPerson || 0, c.currency, rate);
+  }, 0);
+  const paidPerPerson = data.costs.filter(c => c.status === 'done').reduce((s, c) => {
+    return s + toKRW(c.perPerson || 0, c.currency, rate);
+  }, 0);
+  
+  document.getElementById('cost-total').textContent = paidPerPerson.toLocaleString() + '원';
+  document.getElementById('cost-est').textContent = `예상 총액 약 ${Math.round(totalPerPerson/10000)}만원 (1인)`;
+  
+  // 정산 - 루루가 결제한 총액(원화 환산)
+  const paidTotalAll = data.costs.filter(c => c.status === 'done').reduce((s, c) => {
+    return s + toKRW(c.total || 0, c.currency, rate);
+  }, 0);
+  document.getElementById('settle-paid').textContent = paidTotalAll.toLocaleString() + '원';
+  document.getElementById('settle-share').textContent = paidPerPerson.toLocaleString() + '원';
+  document.getElementById('settle-receive').textContent = (paidPerPerson * 3).toLocaleString() + '원';
+  
+  document.getElementById('cost-list').innerHTML = data.costs.map(c => {
+    const cur = c.currency || 'KRW';
+    const isJpy = cur === 'JPY';
+    const totalStr = isJpy 
+      ? `${(c.total || 0).toLocaleString()}엔 (≈${toKRW(c.total || 0, 'JPY', rate).toLocaleString()}원)`
+      : `총 ${(c.total || 0).toLocaleString()}원 (4명)`;
+    const perPersonStr = isJpy
+      ? `${(c.perPerson || 0).toLocaleString()}엔`
+      : `${(c.perPerson || 0).toLocaleString()}원`;
+    const perPersonKrw = isJpy
+      ? `≈ ${toKRW(c.perPerson || 0, 'JPY', rate).toLocaleString()}원`
+      : '';
+    
+    return `
+      <div class="cost-item">
+        <div class="cost-item-left" onclick="editItem('cost', ${c.id})">
+          <span class="cost-item-icon">${c.icon || '💰'}</span>
+          <div class="cost-item-info">
+            <div class="cost-item-name">${c.name}${isJpy ? '<span class="cost-currency-badge jpy">엔</span>' : ''}</div>
+            <div class="cost-item-total">${totalStr}</div>
+          </div>
+        </div>
+        <div class="cost-item-right" onclick="toggleCostStatus(${c.id})">
+          <div class="cost-amount-label">1인</div>
+          <div class="cost-amount">${perPersonStr}</div>
+          ${perPersonKrw ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:1px;">${perPersonKrw}</div>` : ''}
+          <div class="cost-status ${c.status}">${c.status === 'done' ? '✓ 완료' : '⏳ 대기'}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 통화 환산 (원화로)
+function toKRW(amount, currency, rate) {
+  if (currency === 'JPY') return Math.round(amount * rate);
+  return amount; // KRW는 그대로
+}
+
+function toggleCostStatus(id) {
+  if (isViewMode) return;
+  const item = data.costs.find(c => c.id === id);
+  if (item) {
+    item.status = item.status === 'done' ? 'pending' : 'done';
+    saveData();
+    renderCost();
+    showToast(item.status === 'done' ? '✓ 완료로 변경' : '⏳ 대기로 변경');
+  }
+}
+
+// ===== 일정 모달 =====
+function openDayModal() {
+  openModal('day');
+}
+
+function editDayItem(idx) {
+  // idx는 _idx (원본 배열 위치)
+  openModal('day', idx);
+}
+
+// 데이터 전체 초기화
+function resetAllData() {
+  if (isViewMode) return;
+  if (!confirm('⚠️ 모든 데이터를 초기 상태로 되돌릴까?\n\n체크 상태, 추가한 항목, 수정 사항 다 사라져.')) return;
+  if (!confirm('진짜로? 되돌릴 수 없어!')) return;
+  
+  localStorage.removeItem('tokyoTrip2026');
+  data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  saveData();
+  renderHome();
+  showToast('초기화 완료');
+}
+
+// ===== 친구 공유 링크 생성 =====
+
+// 현재 보고 있는 페이지 추적
+let currentPage = 'home';
+
+function generateShareLink() {
+  // 옵션 선택 화면 보여주기
+  document.getElementById('share-step-1').style.display = 'block';
+  document.getElementById('share-step-2').style.display = 'none';
+  
+  // 현재 페이지 이름 업데이트
+  const pageNames = {
+    home: '메인 화면',
+    checklist: '체크리스트',
+    packing: '짐 싸기',
+    cost: '비용 / 정산',
+    contact: '비상 연락처',
+    day: data.days[currentDayId] ? data.days[currentDayId].title : '일정 상세'
+  };
+  document.getElementById('share-current-page').textContent = pageNames[currentPage] || '메인 화면';
+  
+  // 메인이면 전체 공유, 다른 페이지면 "현재 페이지만"이 기본 선택
+  if (currentPage === 'home') {
+    document.querySelector('input[name="share-scope"][value="all"]').checked = true;
+  } else {
+    document.querySelector('input[name="share-scope"][value="current"]').checked = true;
+  }
+  document.getElementById('share-custom-options').style.display = 'none';
+  
+  document.getElementById('share-modal-overlay').classList.add('active');
+}
+
+// 옵션 라디오 변경 감지
+document.addEventListener('change', (e) => {
+  if (e.target.name === 'share-scope') {
+    const isCustom = e.target.value === 'custom';
+    document.getElementById('share-custom-options').style.display = isCustom ? 'block' : 'none';
+  }
+});
+
+function confirmShare() {
+  const scope = document.querySelector('input[name="share-scope"]:checked').value;
+  let shareData = {};
+  let limitedPage = null;
+  
+  if (scope === 'all') {
+    // 전체 공유
+    shareData = {
+      checklist: data.checklist,
+      packing: data.packing,
+      costs: data.costs,
+      days: data.days,
+      settings: data.settings
+    };
+  } else if (scope === 'custom') {
+    // 선택 공유
+    const checkboxes = document.querySelectorAll('#share-custom-options input[type="checkbox"]');
+    const includeKeys = {};
+    checkboxes.forEach(cb => {
+      includeKeys[cb.dataset.key] = cb.checked;
+    });
+    
+    if (includeKeys.checklist) shareData.checklist = data.checklist;
+    if (includeKeys.packing) shareData.packing = data.packing;
+    if (includeKeys.costs) {
+      shareData.costs = data.costs;
+      shareData.settings = data.settings;
+    }
+    if (includeKeys.days) shareData.days = data.days;
+    
+    // 메뉴 가시성 정보
+    shareData._hide = {
+      checklist: !includeKeys.checklist,
+      packing: !includeKeys.packing,
+      costs: !includeKeys.costs,
+      days: !includeKeys.days,
+      contact: !includeKeys.contact
+    };
+  } else if (scope === 'current') {
+    // 현재 페이지만
+    limitedPage = currentPage;
+    shareData._lockTo = currentPage;
+    shareData._lockDayId = currentDayId;
+    
+    // 페이지별로 필요한 데이터만
+    if (currentPage === 'checklist') shareData.checklist = data.checklist;
+    else if (currentPage === 'packing') shareData.packing = data.packing;
+    else if (currentPage === 'cost') {
+      shareData.costs = data.costs;
+      shareData.settings = data.settings;
+    }
+    else if (currentPage === 'day') {
+      shareData.days = {};
+      shareData.days[currentDayId] = data.days[currentDayId];
+    }
+    else {
+      // 메인은 모든 데이터 필요 (요약 표시)
+      shareData = {
+        checklist: data.checklist,
+        packing: data.packing,
+        costs: data.costs,
+        days: data.days,
+        settings: data.settings
+      };
+    }
+  }
+  
+  try {
+    const jsonStr = JSON.stringify(shareData);
+    const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?d=${encoded}`;
+    
+    if (shareUrl.length > 8000) {
+      if (!confirm(`링크가 길어 (${Math.round(shareUrl.length/1000)}KB). 계속할까?`)) return;
+    }
+    
+    // 결과 화면으로
+    document.getElementById('share-url-display').value = shareUrl;
+    document.getElementById('share-url-length').textContent = shareUrl.length.toLocaleString();
+    document.getElementById('share-step-1').style.display = 'none';
+    document.getElementById('share-step-2').style.display = 'block';
+    
+    // 자동 클립보드 복사 시도
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+  } catch(e) {
+    showToast('링크 생성 실패: ' + e.message);
+  }
+}
+
+function closeShareModal() {
+  document.getElementById('share-modal-overlay').classList.remove('active');
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('share-url-display');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  try {
+    document.execCommand('copy');
+    showToast('📋 링크 복사됨!');
+  } catch(e) {
+    showToast('수동으로 복사해줘');
+  }
+}
+
+function shareViaSystem() {
+  const url = document.getElementById('share-url-display').value;
+  if (navigator.share) {
+    navigator.share({
+      title: '🗼 도쿄 4인방 여행 가이드',
+      text: '내가 정리한 여행 정보야!',
+      url: url
+    }).catch(() => {});
+  } else {
+    copyShareUrl();
+  }
+}
+
+// ===== 모달 / 추가 수정 삭제 =====
+function openModal(type, id) {
+  if (isViewMode) return;
+  editingType = type;
+  editingId = (id === undefined || id === null) ? null : id;
+  
+  const modal = document.getElementById('modal-overlay');
+  const title = document.getElementById('modal-title');
+  const catGroup = document.getElementById('modal-cat-group');
+  const catSelect = document.getElementById('modal-cat');
+  const metaGroup = document.getElementById('modal-meta-group');
+  const amountGroup = document.getElementById('modal-amount-group');
+  const timeGroup = document.getElementById('modal-time-group');
+  const detailGroup = document.getElementById('modal-detail-group');
+  const durationGroup = document.getElementById('modal-duration-group');
+  const perPersonGroup = document.getElementById('modal-perperson-group');
+  const currencyGroup = document.getElementById('modal-currency-group');
+  const deleteBtn = document.getElementById('modal-delete');
+  const nameLabel = document.getElementById('modal-name-label');
+  const nameInput = document.getElementById('modal-name');
+  
+  // 초기화
+  document.getElementById('modal-name').value = '';
+  document.getElementById('modal-meta').value = '';
+  document.getElementById('modal-amount-total').value = '';
+  document.getElementById('modal-amount-perperson').value = '';
+  document.getElementById('modal-amount-perperson').dataset.manual = '';
+  document.getElementById('modal-time').value = '';
+  document.getElementById('modal-detail').value = '';
+  document.getElementById('modal-duration').value = '';
+  document.querySelector('input[name="modal-currency"][value="KRW"]').checked = true;
+  
+  // 모든 그룹 숨기기
+  catGroup.style.display = 'none';
+  metaGroup.style.display = 'none';
+  amountGroup.style.display = 'none';
+  perPersonGroup.style.display = 'none';
+  currencyGroup.style.display = 'none';
+  timeGroup.style.display = 'none';
+  detailGroup.style.display = 'none';
+  durationGroup.style.display = 'none';
+  nameLabel.textContent = '이름';
+  nameInput.placeholder = '예: 디즈니 공식 앱 설치';
+  
+  // 카테고리 옵션
+  let catOptions = [];
+  if (type === 'check') catOptions = [
+    {v: 'urgent', l: '🔴 시급'},
+    {v: 'medium', l: '🟡 5월 중'},
+    {v: 'low', l: '🟢 6월 중'}
+  ];
+  else if (type === 'pack') catOptions = [
+    {v: 'carry', l: '✈️ 기내 가방'},
+    {v: 'suit', l: '🧳 캐리어'}
+  ];
+  
+  if (type === 'cost') {
+    currencyGroup.style.display = 'block';
+    amountGroup.style.display = 'block';
+    perPersonGroup.style.display = 'block';
+  } else if (type === 'day') {
+    timeGroup.style.display = 'block';
+    durationGroup.style.display = 'block';
+    detailGroup.style.display = 'block';
+    nameLabel.textContent = '제목';
+    nameInput.placeholder = '예: 디즈니 입장 + DPA 결제';
+  } else {
+    catGroup.style.display = 'block';
+    metaGroup.style.display = 'block';
+    catSelect.innerHTML = catOptions.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
+  }
+  
+  // 수정 모드
+  if (id !== null && id !== undefined) {
+    title.textContent = '항목 수정';
+    deleteBtn.style.display = 'block';
+    let item;
+    if (type === 'check') item = data.checklist.find(i => i.id === id);
+    else if (type === 'pack') item = data.packing.find(i => i.id === id);
+    else if (type === 'cost') item = data.costs.find(i => i.id === id);
+    else if (type === 'day') {
+      item = data.days[currentDayId].items[id];
+    }
+    
+    if (item) {
+      document.getElementById('modal-name').value = item.name || item.title || '';
+      if (type === 'cost') {
+        document.getElementById('modal-amount-total').value = item.total || '';
+        document.getElementById('modal-amount-perperson').value = item.perPerson || '';
+        const cur = item.currency || 'KRW';
+        document.querySelector(`input[name="modal-currency"][value="${cur}"]`).checked = true;
+        updateCurrencyLabels();
+      } else if (type === 'day') {
+        document.getElementById('modal-time').value = item.time || '';
+        document.getElementById('modal-detail').value = item.detail || '';
+        document.getElementById('modal-duration').value = item.duration || '';
+      } else {
+        document.getElementById('modal-meta').value = item.meta || '';
+        catSelect.value = item.cat;
+      }
+    }
+  } else {
+    title.textContent = '새 항목 추가';
+    deleteBtn.style.display = 'none';
+  }
+  
+  modal.classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('active');
+  editingType = null;
+  editingId = null;
+}
+
+function saveItem() {
+  const name = document.getElementById('modal-name').value.trim();
+  if (!name) { showToast('이름을 입력해줘'); return; }
+  
+  if (editingType === 'cost') {
+    const total = parseInt(document.getElementById('modal-amount-total').value) || 0;
+    let perPerson = parseInt(document.getElementById('modal-amount-perperson').value) || 0;
+    const currency = document.querySelector('input[name="modal-currency"]:checked').value;
+    // 1인 비워두면 총액/4 자동 계산
+    if (!perPerson && total) perPerson = Math.round(total / 4);
+    if (editingId !== null) {
+      const item = data.costs.find(i => i.id === editingId);
+      if (item) { item.name = name; item.total = total; item.perPerson = perPerson; item.currency = currency; }
+    } else {
+      data.costs.push({
+        id: Date.now(),
+        name, total, perPerson, currency,
+        status: 'pending',
+        icon: currency === 'JPY' ? '💴' : '💰'
+      });
+    }
+  } else if (editingType === 'day') {
+    const time = document.getElementById('modal-time').value.trim();
+    const detail = document.getElementById('modal-detail').value.trim();
+    const duration = document.getElementById('modal-duration').value.trim();
+    if (!currentDayId) { showToast('일정 정보 오류'); return; }
+    if (editingId !== null) {
+      // 수정
+      data.days[currentDayId].items[editingId] = {time, title: name, detail, duration};
+    } else {
+      // 추가
+      data.days[currentDayId].items.push({time, title: name, detail, duration});
+    }
+  } else {
+    const cat = document.getElementById('modal-cat').value;
+    const meta = document.getElementById('modal-meta').value.trim();
+    const list = editingType === 'check' ? data.checklist : data.packing;
+    if (editingId !== null) {
+      const item = list.find(i => i.id === editingId);
+      if (item) { item.name = name; item.cat = cat; item.meta = meta; }
+    } else {
+      list.push({
+        id: Date.now(),
+        cat, name, meta,
+        checked: false
+      });
+    }
+  }
+  
+  saveData();
+  closeModal();
+  
+  if (editingType === 'check') renderChecklist();
+  else if (editingType === 'pack') renderPacking();
+  else if (editingType === 'cost') renderCost();
+  else if (editingType === 'day') showDay(currentDayId);
+  
+  showToast(editingId !== null ? '수정됐어' : '추가됐어');
+}
+
+function editItem(type, id) {
+  openModal(type, id);
+}
+
+function deleteItem() {
+  if (editingId === null) return;
+  if (!confirm('정말 삭제할까?')) return;
+  
+  if (editingType === 'check') data.checklist = data.checklist.filter(i => i.id !== editingId);
+  else if (editingType === 'pack') data.packing = data.packing.filter(i => i.id !== editingId);
+  else if (editingType === 'cost') data.costs = data.costs.filter(i => i.id !== editingId);
+  else if (editingType === 'day') {
+    data.days[currentDayId].items.splice(editingId, 1);
+  }
+  
+  saveData();
+  closeModal();
+  
+  if (editingType === 'check') renderChecklist();
+  else if (editingType === 'pack') renderPacking();
+  else if (editingType === 'cost') renderCost();
+  else if (editingType === 'day') showDay(currentDayId);
+  
+  showToast('삭제됐어');
+}
+
+// 환율 수정
+function openExchangeModal() {
+  if (isViewMode) return;
+  const current = Math.round((data.settings.exchangeRate || 9.5) * 100);
+  const input = prompt(`현재 환율: 100엔 = ${current}원\n\n새 환율을 입력해줘 (100엔 기준, 숫자만)\n예: 950`, current);
+  if (input === null) return;
+  const newRate = parseInt(input);
+  if (isNaN(newRate) || newRate <= 0) {
+    showToast('숫자를 정확히 입력해줘');
+    return;
+  }
+  data.settings.exchangeRate = newRate / 100; // 1엔당 환율로 저장
+  saveData();
+  renderCost();
+  showToast(`환율 변경: 100엔 = ${newRate}원`);
+}
+
+// ===== 토스트 =====
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// 통화 라벨 업데이트 (원/엔)
+function updateCurrencyLabels() {
+  const checked = document.querySelector('input[name="modal-currency"]:checked');
+  if (!checked) return;
+  const unit = checked.value === 'JPY' ? '엔' : '원';
+  document.getElementById('modal-amount-label').textContent = `총 금액 (4명 합계, ${unit})`;
+  document.getElementById('modal-perperson-label').textContent = `1인 부담액 (${unit})`;
+}
+
+// 라디오 변경 이벤트
+document.addEventListener('change', (e) => {
+  if (e.target.name === 'modal-currency') {
+    updateCurrencyLabels();
+  }
+});
+
+// 총액 입력 시 1인 부담액 자동 계산
+function autoCalcPerPerson() {
+  const totalInput = document.getElementById('modal-amount-total');
+  const perPersonInput = document.getElementById('modal-amount-perperson');
+  const total = parseInt(totalInput.value) || 0;
+  if (total > 0 && !perPersonInput.dataset.manual) {
+    perPersonInput.value = Math.round(total / 4);
+  }
+}
+
+// 1인 부담액 직접 수정하면 수동 입력 모드
+document.addEventListener('DOMContentLoaded', () => {
+  const ppInput = document.getElementById('modal-amount-perperson');
+  if (ppInput) {
+    ppInput.addEventListener('input', (e) => {
+      if (e.isTrusted) ppInput.dataset.manual = 'true';
+    });
+  }
+});
+
+// ===== 초기화 =====
+checkViewMode();
+loadData();
+
+// 공유받은 모드 + 현재 페이지 잠금이면 그 페이지로 이동
+if (urlData && urlData._lockTo) {
+  if (urlData._lockTo === 'day' && urlData._lockDayId) {
+    setTimeout(() => showDay(urlData._lockDayId), 50);
+  } else {
+    setTimeout(() => showPage(urlData._lockTo), 50);
+  }
+} else {
+  renderHome();
+}
+
+// 모달 오버레이 클릭시 닫기
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'modal-overlay') closeModal();
+});
+
+document.getElementById('share-modal-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'share-modal-overlay') closeShareModal();
+});
+</script>
+</body>
+</html>
