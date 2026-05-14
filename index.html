@@ -1010,6 +1010,7 @@ body.view-mode .check-item .check-text { pointer-events: none; }
 body.view-mode .cost-item-right { cursor: default; pointer-events: none; }
 body.view-mode .cost-item-left { cursor: default; pointer-events: none; }
 body.view-mode .timeline-item { cursor: default; }
+body.view-mode #modal-photo-input { display: none !important; }
 
 /* 친구 모드 배지 */
 .view-badge {
@@ -1042,6 +1043,90 @@ body.view-mode { padding-top: 30px; }
 }
 
 .info-banner strong { color: var(--pink-900); }
+
+/* ===== 사진 ===== */
+.photo-thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.photo-thumb-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.photo-remove-btn {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--danger);
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.timeline-photos {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.timeline-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+/* 사진 크게 보기 모달 */
+.photo-viewer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.photo-viewer.active { display: flex; }
+
+.photo-viewer img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.photo-viewer-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
 
 </style>
 </head>
@@ -1361,6 +1446,12 @@ body.view-mode { padding-top: 30px; }
       <label class="form-label">소요 시간 (선택, 비우면 자동 계산)</label>
       <input type="text" class="form-input" id="modal-duration" placeholder="예: 30분 또는 1시간 30분">
     </div>
+    <div class="form-group" id="modal-photos-group" style="display:none;">
+      <label class="form-label">📷 참고 사진 (선택)</label>
+      <input type="file" id="modal-photo-input" accept="image/*" multiple style="display:none;" onchange="handlePhotoUpload(event)">
+      <button type="button" class="btn" style="width:100%; background: var(--pink-50); color: var(--pink-600); font-size: 13px; padding: 10px; margin-bottom: 8px;" onclick="document.getElementById('modal-photo-input').click()">+ 사진 추가하기</button>
+      <div id="modal-photos-preview" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+    </div>
     <div class="form-group" id="modal-currency-group" style="display:none;">
       <label class="form-label">통화</label>
       <div style="display:flex;gap:8px;">
@@ -1389,6 +1480,12 @@ body.view-mode { padding-top: 30px; }
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- 사진 크게 보기 -->
+<div class="photo-viewer" id="photo-viewer" onclick="closePhotoViewer()">
+  <button class="photo-viewer-close" onclick="closePhotoViewer()">✕</button>
+  <img id="photo-viewer-img" src="" alt="">
+</div>
 
 <script>
 // ===== 데이터 =====
@@ -1736,6 +1833,13 @@ function showDay(dayId) {
       <div class="timeline-card">
         <div class="timeline-title">${item.title}</div>
         ${item.detail ? `<div class="timeline-detail">${item.detail}</div>` : ''}
+        ${item.photos && item.photos.length > 0 ? `
+          <div class="timeline-photos">
+            ${item.photos.map((p, pIdx) => `
+              <img src="${p}" class="timeline-photo" onclick="event.stopPropagation(); viewTimelinePhoto('${currentDayId}', ${item._idx}, ${pIdx})">
+            `).join('')}
+          </div>
+        ` : ''}
       </div>
     </div>
   `).join('');
@@ -2102,6 +2206,98 @@ function getDateStr() {
   return `${d.getMonth()+1}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
+// ===== 사진 업로드/관리 =====
+let currentPhotos = []; // 모달에서 편집 중인 사진 배열
+
+async function handlePhotoUpload(event) {
+  const files = Array.from(event.target.files);
+  if (files.length === 0) return;
+  
+  showToast('📷 사진 처리 중...');
+  
+  for (const file of files) {
+    try {
+      const compressed = await compressImage(file);
+      currentPhotos.push(compressed);
+    } catch(e) {
+      showToast('사진 1개 처리 실패');
+    }
+  }
+  
+  // input 초기화 (같은 파일 다시 선택 가능하도록)
+  event.target.value = '';
+  
+  renderPhotoPreview();
+  showToast(`📷 ${files.length}장 추가됨`);
+}
+
+// 이미지 압축 (가로 800px, JPEG 80% 품질)
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxWidth = 800;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderPhotoPreview() {
+  const container = document.getElementById('modal-photos-preview');
+  container.innerHTML = currentPhotos.map((p, idx) => `
+    <div class="photo-thumb-wrapper">
+      <img src="${p}" class="photo-thumb" onclick="viewPhoto('${idx}', true)">
+      <div class="photo-remove-btn" onclick="removePhoto(${idx})">×</div>
+    </div>
+  `).join('');
+}
+
+function removePhoto(idx) {
+  currentPhotos.splice(idx, 1);
+  renderPhotoPreview();
+}
+
+function viewPhoto(src, isIdx) {
+  // isIdx=true면 currentPhotos에서, 아니면 직접 src
+  const photoSrc = isIdx ? currentPhotos[parseInt(src)] : src;
+  document.getElementById('photo-viewer-img').src = photoSrc;
+  document.getElementById('photo-viewer').classList.add('active');
+}
+
+function viewTimelinePhoto(dayId, itemIdx, photoIdx) {
+  const item = data.days[dayId].items[itemIdx];
+  if (item && item.photos && item.photos[photoIdx]) {
+    document.getElementById('photo-viewer-img').src = item.photos[photoIdx];
+    document.getElementById('photo-viewer').classList.add('active');
+  }
+}
+
+function closePhotoViewer() {
+  document.getElementById('photo-viewer').classList.remove('active');
+}
+
 
 // ===== 모달 / 추가 수정 삭제 =====
 function openModal(type, id) {
@@ -2144,6 +2340,8 @@ function openModal(type, id) {
   timeGroup.style.display = 'none';
   detailGroup.style.display = 'none';
   durationGroup.style.display = 'none';
+  document.getElementById('modal-photos-group').style.display = 'none';
+  document.getElementById('modal-photos-preview').innerHTML = '';
   nameLabel.textContent = '이름';
   nameInput.placeholder = '예: 디즈니 공식 앱 설치';
   
@@ -2167,8 +2365,10 @@ function openModal(type, id) {
     timeGroup.style.display = 'block';
     durationGroup.style.display = 'block';
     detailGroup.style.display = 'block';
+    document.getElementById('modal-photos-group').style.display = 'block';
     nameLabel.textContent = '제목';
     nameInput.placeholder = '예: 디즈니 입장 + DPA 결제';
+    currentPhotos = []; // 사진 초기화
   } else {
     catGroup.style.display = 'block';
     metaGroup.style.display = 'block';
@@ -2199,6 +2399,8 @@ function openModal(type, id) {
         document.getElementById('modal-time').value = item.time || '';
         document.getElementById('modal-detail').value = item.detail || '';
         document.getElementById('modal-duration').value = item.duration || '';
+        currentPhotos = item.photos ? [...item.photos] : [];
+        renderPhotoPreview();
       } else {
         document.getElementById('modal-meta').value = item.meta || '';
         catSelect.value = item.cat;
@@ -2243,13 +2445,14 @@ function saveItem() {
     const time = document.getElementById('modal-time').value.trim();
     const detail = document.getElementById('modal-detail').value.trim();
     const duration = document.getElementById('modal-duration').value.trim();
+    const photos = [...currentPhotos];
     if (!currentDayId) { showToast('일정 정보 오류'); return; }
     if (editingId !== null) {
       // 수정
-      data.days[currentDayId].items[editingId] = {time, title: name, detail, duration};
+      data.days[currentDayId].items[editingId] = {time, title: name, detail, duration, photos};
     } else {
       // 추가
-      data.days[currentDayId].items.push({time, title: name, detail, duration});
+      data.days[currentDayId].items.push({time, title: name, detail, duration, photos});
     }
   } else {
     const cat = document.getElementById('modal-cat').value;
