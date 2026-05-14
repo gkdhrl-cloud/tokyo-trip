@@ -476,6 +476,9 @@ body.view-mode .share-btn { display: none; }
 
 .check-action-btn:active { background: var(--pink-50); }
 
+/* 삭제 버튼 - 위험한 액션이라 살짝 구분 */
+.check-action-btn.delete:active { background: rgba(226, 75, 74, 0.1); }
+
 /* ===== 비용/정산 ===== */
 .cost-hero {
   background: var(--pink-50);
@@ -2221,6 +2224,7 @@ function renderChecklist() {
             </div>
             <div class="check-actions">
               <button class="check-action-btn" onclick="editItem('check', ${item.id})">✎</button>
+              <button class="check-action-btn delete" onclick="deleteCheckItem(${item.id})">🗑</button>
             </div>
           </div>
         `).join('')}
@@ -2266,6 +2270,7 @@ function renderPacking() {
             </div>
             <div class="check-actions">
               <button class="check-action-btn" onclick="editItem('pack', ${item.id})">✎</button>
+              <button class="check-action-btn delete" onclick="deletePackItem(${item.id})">🗑</button>
             </div>
           </div>
         `).join('')}
@@ -2284,6 +2289,30 @@ function togglePack(id) {
     saveData();
     renderPacking();
   }
+}
+
+// 목록에서 바로 삭제 (수정 모달 안 거치고)
+// 이름을 보여주면서 confirm → 실수로 누르는 거 방지
+function deleteCheckItem(id) {
+  if (isViewMode) return;
+  const item = data.checklist.find(i => i.id === id);
+  if (!item) return;
+  if (!confirm(`"${item.name}" 삭제할까?`)) return;
+  data.checklist = data.checklist.filter(i => i.id !== id);
+  saveData();
+  renderChecklist();
+  showToast('삭제됐어');
+}
+
+function deletePackItem(id) {
+  if (isViewMode) return;
+  const item = data.packing.find(i => i.id === id);
+  if (!item) return;
+  if (!confirm(`"${item.name}" 삭제할까?`)) return;
+  data.packing = data.packing.filter(i => i.id !== id);
+  saveData();
+  renderPacking();
+  showToast('삭제됐어');
 }
 
 // ===== 비용 =====
